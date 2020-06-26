@@ -17,8 +17,8 @@ const word = async (req: any, res: any) => {
         const formData = new FormData();
         formData.append("wavfile", file.buffer);
         formData.append("format", "json");
-        const subResponse = await new Promise<any>((resolve, reject) => formData.submit(PartiiURL, (error, response) => error ? reject(error) : resolve(response)));
-        console.log('[DEBUG]',subResponse);
+        const subResponse = await new Promise<any>((resolve, reject) => formData.submit(PartiiURL, (error, response) => error ? (() => {throw error})() : resolve(response)));
+        console.log('[DEBUG]',subResponse.ok);
         if (!subResponse.ok) {
             res.status(500).send("API call failed");
             return;
