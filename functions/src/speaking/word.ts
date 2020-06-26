@@ -1,3 +1,4 @@
+import * as FormData from "form-data";
 const PartiiURL = "https://api.aiforthai.in.th/partii-webapi";
 /**
  * Receives sound wav and text as payload
@@ -16,11 +17,8 @@ const word = async (req: any, res: any) => {
         const formData = new FormData();
         formData.append("wavfile", file);
         formData.append("format", "json");
-        const subResponse = await fetch(PartiiURL, {
-            method: "POST",
-            mode: "cors",
-            body: formData,
-        });
+        const subResponse = await new Promise<any>((resolve) => formData.submit(PartiiURL, response => resolve(response)));
+        console.log('[DEBUG]',subResponse);
         if (!subResponse.ok) {
             res.status(500).send("API call failed");
             return;
