@@ -27,8 +27,10 @@ const word = async (req: any, res: any) => {
         const bufferResponse = await new Promise<any>((resolve) =>
             APIRequest.on("response", (resp) => resolve(resp))
         );
-        const responseString = await new Promise<any>((resolve) =>
-            bufferResponse.on("data", (d: any) => resolve(d))
+        const responseString = (
+            await new Promise<any>((resolve) =>
+                bufferResponse.on("data", (d: any) => resolve(d))
+            )
         ).toString();
         console.log("[responseString", responseString);
         const responseData = JSON.parse(responseString);
