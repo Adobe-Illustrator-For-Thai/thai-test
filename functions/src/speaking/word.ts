@@ -18,16 +18,21 @@ const word = async (req: any, res: any) => {
         formData.append("wavfile", file.buffer);
         formData.append("format", "json");
         const APIRequest = https.request({
-            method: 'post',
+            method: "post",
             host: "api.aiforthai.in.th",
             path: "partii-webapi",
             headers: formData.getHeaders(),
         });
         formData.pipe(APIRequest);
-        const bufferResponse = await new Promise<any>(resolve => APIRequest.on('response', (resp) => resolve(resp)));
-        console.log('[bufferResponse]', bufferResponse);
-        const responseData = await new Promise<any>(resolve => bufferResponse.on('data', (d: any) => resolve(d)));
-        console.log('[responseData]', responseData);
+        const bufferResponse = await new Promise<any>((resolve) =>
+            APIRequest.on("response", (resp) => resolve(resp))
+        );
+        const responseString = await new Promise<any>((resolve) =>
+            bufferResponse.on("data", (d: any) => resolve(d))
+        ).toString();
+        console.log("[responseString", responseString);
+        const responseData = JSON.parse(responseString);
+        console.log("[responseData]", responseData);
         if (responseData.status !== "success") {
             res.status(500).send("Unsuccessful API processing");
             console.error("[ERROR]", responseData.status);
