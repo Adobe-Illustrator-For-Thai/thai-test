@@ -15,7 +15,7 @@ const word = async (req: any, res: any) => {
             return;
         }
         const formData = new FormData();
-        formData.append("wavfile", file);
+        formData.append("wavfile", file.buffer);
         formData.append("format", "json");
         const subResponse = await new Promise<any>((resolve, reject) => formData.submit(PartiiURL, (error, response) => error ? reject(error) : resolve(response)));
         console.log('[DEBUG]',subResponse);
