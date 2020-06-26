@@ -1,6 +1,5 @@
 import * as FormData from "form-data";
 import * as https from "https";
-const PartiiURL = "https://api.aiforthai.in.th/partii-webapi";
 /**
  * Receives sound wav and text as payload
  * Returns score (0-1) as response
