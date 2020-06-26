@@ -1,4 +1,5 @@
 import * as FormData from "form-data";
+import * as https from "https";
 const PartiiURL = "https://api.aiforthai.in.th/partii-webapi";
 /**
  * Receives sound wav and text as payload
@@ -17,13 +18,17 @@ const word = async (req: any, res: any) => {
         const formData = new FormData();
         formData.append("wavfile", file.buffer);
         formData.append("format", "json");
-        const subResponse = await new Promise<any>((resolve, reject) => formData.submit(PartiiURL, (error, response) => error ? (() => {throw error})() : resolve(response)));
-        console.log('[DEBUG]',subResponse.ok);
-        if (!subResponse.ok) {
-            res.status(500).send("API call failed");
-            return;
-        }
-        const responseData = await subResponse.json();
+        const APIRequest = https.request({
+            method: 'post',
+            host: "api.aiforthai.in.th",
+            path: "partii-webapi",
+            headers: formData.getHeaders(),
+        });
+        formData.pipe(APIRequest);
+        const bufferResponse = await new Promise<any>(resolve => APIRequest.on('response', (resp) => resolve(resp)));
+        console.log('[bufferResponse]', bufferResponse);
+        const responseData = await new Promise<any>(resolve => bufferResponse.on('data', (d: any) => resolve(d)));
+        console.log('[responseData]', responseData);
         if (responseData.status !== "success") {
             res.status(500).send("Unsuccessful API processing");
             console.error("[ERROR]", responseData.status);
