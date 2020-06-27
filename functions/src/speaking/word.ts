@@ -18,21 +18,24 @@ const word = async (req: any, res: any) => {
         formData.append("wavfile", file.buffer);
         formData.append("format", "json");
         const APIRequest = https.request({
-            method: "post",
+            method: "POST",
             host: "api.aiforthai.in.th",
-            path: "partii-webapi",
+            path: "/partii-webapi",
+            port: 443,
             headers: formData.getHeaders(),
         });
         formData.pipe(APIRequest);
         const bufferResponse = await new Promise<any>((resolve) =>
             APIRequest.on("response", (resp) => resolve(resp))
         );
+        const resStatusCode = bufferResponse.statusCode;
+        console.log("[responseStatus]", resStatusCode);
         const responseString = (
             await new Promise<any>((resolve) =>
                 bufferResponse.on("data", (d: any) => resolve(d))
             )
         ).toString();
-        console.log("[responseString", responseString);
+        console.log("[responseString]", responseString);
         const responseData = JSON.parse(responseString);
         console.log("[responseData]", responseData);
         if (responseData.status !== "success") {
