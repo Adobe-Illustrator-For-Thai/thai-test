@@ -1,8 +1,3 @@
 import * as functions from "firebase-functions";
-
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-export const helloWorld = functions.https.onRequest((request, response) => {
-    response.send("Hello from Firebase!");
-});
+import speakingRouter from "./speaking";
+export const speaking = functions.region("asia-east2").https.onRequest(speakingRouter);
