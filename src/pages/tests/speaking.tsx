@@ -44,7 +44,7 @@ const FileInput = (props: FileInputProps) => {
                 setMediaRecorder(currentMediaRecorder);
                 currentMediaRecorder.start();
                 setStream(currentStream);
-                setTimeout(() => currentMediaRecorder.stop(), 5000);
+                setTimeout(() => currentMediaRecorder.stop(), 3000);
                 setProgress(0);
             });
     };
@@ -76,7 +76,7 @@ const FileInput = (props: FileInputProps) => {
     useEffect(() => {
         if(progress !== -1 && progress < 100){
             setTimeout(() => {
-                setProgress(progress+0.3);
+                setProgress(progress+0.5);
             }, 8);
         }
     }, [progress]);
@@ -198,7 +198,7 @@ const SpeakingPage = () => {
             <CenterFlex>
                 <Box width={["90vw", "90vw", "50vw"]}>
                     <Heading>Pronouce this:</Heading>
-                    <Text>{questions[questionIndex]}</Text>
+                    <Heading>{questions[questionIndex]}</Heading>
                     <FileInput file={file} setFile={setFile} />
                     <br />
                     <Button onClick={submitFile}>Submit</Button>
