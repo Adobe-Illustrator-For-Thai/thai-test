@@ -37,7 +37,7 @@ const submit = async (req: any, res: any) => {
                 .on("end", () => resolve())
         );
         const formData = new FormData();
-        const content = fs.readFileSync(ppath, { flag: "rb" });
+        const content = fs.readFileSync(ppath);
         formData.append("wavfile", content);
         formData.append("format", "json");
         const APIRequest = https.request({
