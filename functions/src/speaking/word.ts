@@ -1,5 +1,17 @@
 import * as FormData from "form-data";
 import * as https from "https";
+const { Readable } = require("stream");
+
+/**
+ * @param binary Buffer
+ * returns readableInstanceStream Readable
+ */
+const bufferToStream = (buffer: Buffer) => { 
+    const stream = new Readable();
+    stream.push(buffer);
+    stream.push(null);
+    return stream;
+}
 /**
  * Receives sound wav and text as payload
  * Returns score (0-1) as response
@@ -15,14 +27,17 @@ const word = async (req: any, res: any) => {
             return;
         }
         const formData = new FormData();
-        formData.append("wavfile", file.buffer);
+        formData.append("wavfile", bufferToStream(file.buffer));
         formData.append("format", "json");
         const APIRequest = https.request({
             method: "POST",
             host: "api.aiforthai.in.th",
             path: "/partii-webapi",
             port: 443,
-            headers: {...formData.getHeaders(), "Apikey": "E6XUGhTP29Tm1Tepcy4fWbZ1CyzMOVxY"},
+            headers: {
+                ...formData.getHeaders(),
+                Apikey: "E6XUGhTP29Tm1Tepcy4fWbZ1CyzMOVxY",
+            },
         });
         formData.pipe(APIRequest);
         const bufferResponse = await new Promise<any>((resolve) =>
