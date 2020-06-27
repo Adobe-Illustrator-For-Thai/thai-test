@@ -30,7 +30,7 @@ const Card = ({imageSrc, header, content}: CardProps) => {
 }
 
 const Cards = () => {
-    return <Stack isInline>
+    return <Stack isInline overflow="scroll">
         <Box padding="0px 8vmin" rounded="lg"><Card imageSrc="https://sites.google.com/site/indochinappk/_/rsrc/1468738929801/manu3/101451241.jpg" header="Learn through real situation" content="To understand more about Thai language, we present you Thai article in your language for understanding Thai's basic."/></Box>
         <Box padding="0px 8vmin" rounded="lg"><Card imageSrc="https://cdn-cms.pgimgs.com/static/2020/04/Learn-online.jpg" header="Listen Thai's speech from native AI" content="We introduce you new normal of learning Thai by reading Thai's article to speech."/></Box>
         <Box padding="0px 8vmin" rounded="lg"><Card imageSrc="https://www.omothailand.com/upload/images/59001c222df45.png" header="Speak Thai instead of Tai" content="Don't know how to speech Thai correctly?

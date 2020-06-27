@@ -31,7 +31,7 @@ const Card = ({imageSrc, header, content}: CardProps) => {
 }
 
 const Cards = () => {
-    return <Stack isInline>
+    return <Stack isInline overflow="scroll">
         <Box padding="0px 8vmin" rounded="lg"><Card imageSrc="https://scontent.fhdy2-1.fna.fbcdn.net/v/t1.0-9/s960x960/33083036_1015244835292055_4783984897863712768_o.jpg?_nc_cat=110&_nc_sid=7aed08&_nc_eui2=AeH27w7_Oprd-PTt7a3xPY0eJfnJ6j8IeGol-cnqPwh4ar4mo3sIEG9e0_IozFHUGof9SrkTmsBHMFlOIIefzNvO&_nc_ohc=OkvNOiOn2rwAX8cYEOl&_nc_ht=scontent.fhdy2-1.fna&_nc_tp=7&oh=04c406008e00b1d8c8494edd011a082f&oe=5F1C8AB3" header="Sirawit Phongnakarin" content="Experience coder of our group who is IOI Thailand's
 candidate. Hope you enjoy this website."/></Box>
         <Box padding="0px 8vmin" rounded="lg"><Card imageSrc="https://scontent.fhdy2-1.fna.fbcdn.net/v/t1.0-9/1915419_10203807061095566_140487910208109571_n.jpg?_nc_cat=102&_nc_sid=e007fa&_nc_eui2=AeEUZQgDutnz58TQa46ImIgRENJV44vGnpAQ0lXji8aekLn7uFGR-_Wo64XOnWWei5bGxVMvsQJOsoLOrXKgTsxs&_nc_ohc=dADgjx9pl40AX8PdbdF&_nc_ht=scontent.fhdy2-1.fna&oh=e2827a8cafb73d48e85aac87a697c04b&oe=5F1E38B2" header="Tanadol Ra-ngabpit" content="Initiator of this website who lead the idea about Thai's
