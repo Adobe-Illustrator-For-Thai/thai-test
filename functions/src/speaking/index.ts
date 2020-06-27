@@ -2,6 +2,8 @@ import * as express from "express";
 const router = express.Router();
 import word from "./word";
 router.post("/word", word);
+import submit from "./submit";
+router.post("/submit", submit);
 const app = express();
 //@ts-ignore
 import * as fileMiddleware from "express-multipart-file-parser";
