@@ -13,11 +13,13 @@ import {
     Button,
     Heading,
     Box,
-    useTheme
+    useTheme,
 } from "@chakra-ui/core";
 
 const SPEAKING_API_URL = "https://api.aiforthai.in.th/partii-webapi";
 const SOUNDEX_API_URL = "https://api.aiforthai.in.th/soundex";
+const SUBMIT_API_URL =
+    "https://asia-east2-thai-test-67d93.cloudfunctions.net/speaking/submit";
 
 interface FileInputProps {
     file: File;
@@ -40,7 +42,10 @@ const FileInput = (props: FileInputProps) => {
             )
             .then((currentStream) => {
                 const options = { mimeType: "audio/webm" };
-                const currentMediaRecorder = new MediaRecorder(currentStream, options);
+                const currentMediaRecorder = new MediaRecorder(
+                    currentStream,
+                    options
+                );
                 setMediaRecorder(currentMediaRecorder);
                 currentMediaRecorder.start();
                 setStream(currentStream);
@@ -50,33 +55,34 @@ const FileInput = (props: FileInputProps) => {
     };
 
     useEffect(() => {
-        if(!mediaRecorder) return;
+        if (!mediaRecorder) return;
         const listener = (e) => {
             if (e.data.size > 0) {
                 setRecordedChunks([...recordedChunks, e.data]);
             }
-        }
+        };
         mediaRecorder.addEventListener("dataavailable", listener);
-        return () => mediaRecorder.removeEventListener("dataavailable", listener);
+        return () =>
+            mediaRecorder.removeEventListener("dataavailable", listener);
     }, [mediaRecorder]);
 
     useEffect(() => {
-        if(!mediaRecorder) return;
+        if (!mediaRecorder) return;
         const listener = () => {
             const recordedBlob: any = new Blob(recordedChunks);
             recordedBlob.lastModifiedDate = new Date();
             recordedBlob.name = "submission.webm";
             props.setFile(recordedBlob);
-            stream.getTracks().forEach(track => track.stop());
-        }
+            stream.getTracks().forEach((track) => track.stop());
+        };
         mediaRecorder.addEventListener("stop", listener);
         return () => mediaRecorder.removeEventListener("stop", listener);
     }, [mediaRecorder, stream]);
 
     useEffect(() => {
-        if(progress !== -1 && progress < 100){
+        if (progress !== -1 && progress < 100) {
             setTimeout(() => {
-                setProgress(progress+0.5);
+                setProgress(progress + 0.5);
             }, 8);
         }
     }, [progress]);
@@ -86,18 +92,35 @@ const FileInput = (props: FileInputProps) => {
         <FormControl>
             <br />
             <Input as="div" p="0.5rem" height="auto">
-                <Box position="absolute" left="0" w={Math.max(progress, 0)+"%"} h="100%" bg={theme.colors.black} rounded="md" textAlign="right" color={theme.colors.red[400]}>
+                <Box
+                    position="absolute"
+                    left="0"
+                    w={Math.max(progress, 0) + "%"}
+                    h="100%"
+                    bg={theme.colors.black}
+                    rounded="md"
+                    textAlign="right"
+                    color={theme.colors.red[400]}
+                >
                     <Box h="100%" display="inline-block">
                         <CenterFlex h="100%" marginX="0.5rem">
-                            <Text fontWeight="700" marginY="auto">{props.file?.name ? "Complete" : "Recording"}</Text>
+                            <Text fontWeight="700" marginY="auto">
+                                {props.file?.name ? "Complete" : "Recording"}
+                            </Text>
                         </CenterFlex>
-                    </Box> 
+                    </Box>
                 </Box>
-                <Button onClick={startRecording} height="2rem">
+                <Button
+                    onClick={startRecording}
+                    isDisabled={progress !== -1 && progress < 100}
+                    height="2rem"
+                >
                     Start Recording
                 </Button>
             </Input>
-            <FormHelperText>Please allow us to use your microphone to record your audio.</FormHelperText>
+            <FormHelperText>
+                Please allow us to use your microphone to record your audio.
+            </FormHelperText>
         </FormControl>
     );
 };
@@ -133,7 +156,7 @@ enum SpeakingResult {
 }
 
 const getPrettyResult = (result) => {
-    switch(result){
+    switch (result) {
         case SpeakingResult.LOADING:
             return "Loading";
         case SpeakingResult.ACCEPTED:
@@ -147,7 +170,7 @@ const getPrettyResult = (result) => {
         case SpeakingResult.NONE:
             return "";
     }
-}
+};
 
 const SpeakingPage = () => {
     const [file, setFile] = useState<File>();
@@ -159,55 +182,51 @@ const SpeakingPage = () => {
         setText(questions[questionIndex + 1]);
         setQuestionIndex(questionIndex + 1);
     };
-    const submitFile = () => {
+    const submitFile = async () => {
         const formData = new FormData();
-        formData.append("format", "json");
         formData.append("wavfile", file);
         setResult(SpeakingResult.LOADING);
         console.log("Submitting");
-        async () => {
-            const res = await fetch(SPEAKING_API_URL, {
-                method: "POST",
-                mode: "cors",
-                body: formData,
-                headers: { Apikey: "E6XUGhTP29Tm1Tepcy4fWbZ1CyzMOVxY" },
-            });
-            if (!res.ok) {
-                setResult(SpeakingResult.ERROR);
+        const res = await fetch(SUBMIT_API_URL, {
+            method: "POST",
+            mode: "cors",
+            body: formData,
+        });
+        if (!res.ok) {
+            setResult(SpeakingResult.ERROR);
+            return;
+        }
+        const rjson = await res.json();
+        const word: string = rjson.result.split(" ").join("");
+        if (word === questions[questionIndex]) {
+            setResult(SpeakingResult.ACCEPTED);
+        } else {
+            const soundexRes = await fetch(
+                SOUNDEX_API_URL +
+                    `?word=${encodeURIComponent(word)}&model=royin`,
+                {
+                    method: "GET",
+                    mode: "cors",
+                    headers: {
+                        Apikey: "E6XUGhTP29Tm1Tepcy4fWbZ1CyzMOVxY",
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                }
+            );
+            if (!soundexRes.ok) {
+                console.log("soundex fail");
+                setResult(SpeakingResult.WRONG);
                 return;
             }
-            const rjson = await res.json();
-            const word: string = rjson.result.split(" ").join("");
-            if (word === questions[questionIndex]) {
-                setResult(SpeakingResult.ACCEPTED);
+            const soundexJson = await soundexRes.json();
+            if (
+                soundexJson.words.filter(
+                    (targetWord) => targetWord.word === word
+                ).length > 0
+            ) {
+                setResult(SpeakingResult.PARTIAL);
             } else {
-                const soundexRes = await fetch(
-                    SOUNDEX_API_URL +
-                        `?word=${encodeURIComponent(word)}&model=royin`,
-                    {
-                        method: "GET",
-                        mode: "cors",
-                        headers: {
-                            Apikey: "E6XUGhTP29Tm1Tepcy4fWbZ1CyzMOVxY",
-                            "Content-Type": "application/x-www-form-urlencoded",
-                        },
-                    }
-                );
-                if (!soundexRes.ok) {
-                    console.log("soundex fail");
-                    setResult(SpeakingResult.WRONG);
-                    return;
-                }
-                const soundexJson = await soundexRes.json();
-                if (
-                    soundexJson.words.filter(
-                        (targetWord) => targetWord.word === word
-                    ).length > 0
-                ) {
-                    setResult(SpeakingResult.PARTIAL);
-                } else {
-                    setResult(SpeakingResult.WRONG);
-                }
+                setResult(SpeakingResult.WRONG);
             }
         }
     };
@@ -220,9 +239,14 @@ const SpeakingPage = () => {
                     <Heading>{questions[questionIndex]}</Heading>
                     <FileInput file={file} setFile={setFile} />
                     <br />
-                    <Button onClick={submitFile} isDisabled={result === SpeakingResult.LOADING}>Submit</Button>
+                    <Button
+                        onClick={() => submitFile()}
+                        isDisabled={result === SpeakingResult.LOADING}
+                    >
+                        Submit
+                    </Button>
                     <CenterFlex width="100%">
-                        <Heading>{ getPrettyResult(result) }</Heading>
+                        <Heading>{getPrettyResult(result)}</Heading>
                     </CenterFlex>
                 </Box>
             </CenterFlex>
