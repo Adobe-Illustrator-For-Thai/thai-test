@@ -13,6 +13,7 @@ import {
     Button,
     Heading,
     Box,
+    Stack,
     useTheme,
 } from "@chakra-ui/core";
 
@@ -163,6 +164,7 @@ const SpeakingPage = () => {
     const [result, setResult] = useState<SpeakingResult>(SpeakingResult.NONE);
     const [text, setText] = useState<string>("");
     const [questionIndex, setQuestionIndex] = useState<number>(0);
+    const [disableNext, setDisableNext] = useState<boolean>(false);
     const nextQuestion = () => {
         if (questionIndex === questions.length - 1) return;
         setText(questions[questionIndex + 1]);
@@ -179,15 +181,15 @@ const SpeakingPage = () => {
             mode: "cors",
             body: formData,
             headers: {
-                Apikey: "E6XUGhTP29Tm1Tepcy4fWbZ1CyzMOVxY"
-            }
+                Apikey: "E6XUGhTP29Tm1Tepcy4fWbZ1CyzMOVxY",
+            },
         });
         if (!res.ok) {
             setResult(SpeakingResult.ERROR);
             return;
         }
-        const rjson = await res.json();
-        const word: string = rjson.result.split(" ").join("");
+        const rtext = await res.text();
+        const word: string = rtext.split(" ").join("");
         if (word === questions[questionIndex]) {
             setResult(SpeakingResult.ACCEPTED);
         } else {
@@ -195,7 +197,7 @@ const SpeakingPage = () => {
                 SOUNDEX_API_URL +
                     `?word=${encodeURIComponent(word)}&model=royin`,
                 {
-                    method: "GET",
+                    method: "POST",
                     mode: "cors",
                     headers: {
                         Apikey: "E6XUGhTP29Tm1Tepcy4fWbZ1CyzMOVxY",
@@ -220,6 +222,13 @@ const SpeakingPage = () => {
             }
         }
     };
+    const nextProblem = () => {
+        setDisableNext(true);
+        setTimeout(() => {
+            nextQuestion();
+            setDisableNext(false);
+        }, 3000);
+    }
     return (
         <Layout>
             <SEO title="Learn Thai as Thai style | Speaking Test" />
@@ -229,12 +238,17 @@ const SpeakingPage = () => {
                     <Heading>{questions[questionIndex]}</Heading>
                     <FileInput file={file} setFile={setFile} />
                     <br />
-                    <Button
-                        onClick={() => submitFile()}
-                        isDisabled={result === SpeakingResult.LOADING}
-                    >
-                        Submit
-                    </Button>
+                    <Stack isInline>
+                        <Button
+                            onClick={() => submitFile()}
+                            isDisabled={
+                                result === SpeakingResult.LOADING || !file
+                            }
+                        >
+                            Submit
+                        </Button>
+                        <Button onClick={() => nextProblem()} isDisabled={disableNext}>Next</Button>
+                    </Stack>
                     <CenterFlex width="100%">
                         <Heading>{getPrettyResult(result)}</Heading>
                     </CenterFlex>
