@@ -3,13 +3,14 @@ import Layout from "../../components/layout";
 import SEO from "../../components/seo";
 import Links from "../../components/links";
 import { Link } from "gatsby";
-import {VisuallyHidden,Box,Button,ButtonGroup,ControlBox,Input,Text,Image,ListItem} from "@chakra-ui/core";
+import {VisuallyHidden,Box,Button,ButtonGroup,ControlBox,Input,Text,Image,ListItem,Stack} from "@chakra-ui/core";
 
 const ChoiceBox = ({header}) => {
     return <Box padding="10px">
     <label>
   {/* This is the sibling input, it's visually hidden */}
-  <VisuallyHidden type="radio" as="input" name="choice"/>
+  {// @ts-ignore
+    }<VisuallyHidden type="radio" as="input" name="choice"/>
   {/* This is the control box with a circle as children */}
   <ControlBox
     size="24px"
@@ -39,23 +40,27 @@ const IndexPage = () => (
         <SEO title="Learn Thai as Thai style | Listening" />
         <Box padding="10vmin 20%" boxShadow="0 0">
             <Text fontFamily="Mitr, sans-serif" fontSize="md">Question 3/3</Text>
-            <Box border="1px" padding="10px" rounded="lg">
-                <Text fontFamily="Mitr, sans-serif" fontSize="md">Listen to the sentence and answer the question</Text>
-
+            <Stack isInline border="1px" padding="10px" rounded="lg">
+                <Box>
+                    <Text fontFamily="Mitr, sans-serif" fontSize="md">Listen to the sentence and answer the question</Text>
+                    <Image size="200px" objectFit="cover" src="https://www.silpa-mag.com/wp-content/uploads/2017/06/Sunthorn-Phu.jpg" alt="Sunthorn Phu" rounded="lg"/>
+                </Box>
                 <Box border="10px" padding="10px" rounded="lg">
-                <ListItem display="inline-block" padding="0 10px">
-                    <Box ><Image size="200px" objectFit="cover" src="https://www.silpa-mag.com/wp-content/uploads/2017/06/Sunthorn-Phu.jpg" alt="Sunthorn Phu" rounded="lg"/></Box>
-                    <Box width="100%"><ChoiceBox header="I don't know."/>
-                    <ChoiceBox header="I don't do."/>
-                    <ChoiceBox header="I don't want."/>
-                    <ChoiceBox header="I don't mind."/></Box>
-                
+                    <ListItem display="inline-block" padding="0 10px">
+                        
+                        <Box width="100%">
+                            <ChoiceBox header="I don't know."/>
+                            <ChoiceBox header="I don't do."/>
+                            <ChoiceBox header="I don't want."/>
+                            <ChoiceBox header="I don't mind."/>
+                        </Box>
                     
-                </ListItem>
+                        
+                    </ListItem>
                     
                 </Box>
 
-            </Box>
+            </Stack>
 
             <ButtonGroup spacing={4} height="1vmin" width="100%" textAlign="right">
                 <Link to="../question-2">
