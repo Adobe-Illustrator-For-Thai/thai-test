@@ -76,10 +76,18 @@ const FileInput = (props: FileInputProps) => {
     const theme = useTheme();
     return (
         <FormControl>
-            <audio id="player" ref={playerRef} controls></audio>
             <br />
             <Input as="div" p="0.5rem" height="auto">
-                <Box position="absolute" left="0" w={Math.max(progress, 0)+"%"} h="100%" bg="#68D391" rounded="md" textAlign="right" color={theme.colors.white}>
+                <Box
+                    position="absolute"
+                    left="0"
+                    w={Math.max(progress, 0) + "%"}
+                    h="100%"
+                    bg="#68D391"
+                    rounded="md"
+                    textAlign="right"
+                    color={theme.colors.white}
+                >
                     <Box h="100%" display="inline-block">
                         <CenterFlex h="100%" marginX="0.5rem">
                             <Text fontWeight="700" marginY="auto">
@@ -219,32 +227,51 @@ const SpeakingPage = () => {
             nextQuestion();
             setDisableNext(false);
         }, 3000);
-    }
+    };
     return (
         <Layout>
             <SEO title="Learn Thai as Thai style | Speaking Test" />
-            <CenterFlex>
-                <Box  width={["90vw", "90vw", "50vw"]}>
-                    <Heading padding="20px 0px"fontFamily="Lato, sans-serif" fontSize="40px">Pronouce this:</Heading>
-                    <Heading padding="5px" fontFamily="Lato, sans-serif" fontSize="36px">{questions[questionIndex]}</Heading>
-                    <FileInput file={file} setFile={setFile} />
-                    <br />
-                    <Stack isInline>
-                        <Button
-                            onClick={() => submitFile()}
-                            isDisabled={
-                                result === SpeakingResult.LOADING || !file
-                            }
+            <Box flex="1">
+                <CenterFlex>
+                    <Box width={["90vw", "90vw", "50vw"]}>
+                        <Heading
+                            padding="20px 0px"
+                            fontFamily="Lato, sans-serif"
+                            fontSize="40px"
                         >
-                            Submit
-                        </Button>
-                        <Button onClick={() => nextProblem()} isDisabled={disableNext}>Next</Button>
-                    </Stack>
-                    <CenterFlex width="100%">
-                        <Heading>{getPrettyResult(result)}</Heading>
-                    </CenterFlex>
-                </Box>
-            </CenterFlex>
+                            Pronouce this:
+                        </Heading>
+                        <Heading
+                            padding="5px"
+                            fontFamily="Lato, sans-serif"
+                            fontSize="36px"
+                        >
+                            {questions[questionIndex]}
+                        </Heading>
+                        <FileInput file={file} setFile={setFile} />
+                        <br />
+                        <Stack isInline>
+                            <Button
+                                onClick={() => submitFile()}
+                                isDisabled={
+                                    result === SpeakingResult.LOADING || !file
+                                }
+                            >
+                                Submit
+                            </Button>
+                            <Button
+                                onClick={() => nextProblem()}
+                                isDisabled={disableNext}
+                            >
+                                Next
+                            </Button>
+                        </Stack>
+                        <CenterFlex width="100%">
+                            <Heading>{getPrettyResult(result)}</Heading>
+                        </CenterFlex>
+                    </Box>
+                </CenterFlex>
+            </Box>
         </Layout>
     );
 };
