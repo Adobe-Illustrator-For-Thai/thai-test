@@ -53,11 +53,11 @@ const Layout = ({ children }) => {
                 <footer style={{bottom: 0}}>
                     <Box
                         bg="#DCDCDC"
-                        paddingTop="10px"
+                        paddingTop="5px"
                         overflow="auto"
                         marginBottom="0"
                     >
-                        <Text padding="10px">Learn Thai Style</Text>
+                        <Text padding="10px" fontWeight="600" marginLeft="5px">Learn Thai Style</Text>
                         <hr
                             style={{
                                 margin: `0 10px`,
@@ -71,12 +71,13 @@ const Layout = ({ children }) => {
                                 float="left"
                                 margin="10px"
                             >
-                                <Icon name="edit" size="32px"></Icon>Language
+                                <Icon name="edit" size="28px" marginRight="10px" marginLeft="5px"/>Language
                             </ListItem>
                             <ListItem
                                 display="inline-block"
                                 float="right"
-                                margin="10px"
+                                marginX="15px"
+                                marginY="10px"
                             >
                                 Contact Us
                             </ListItem>
