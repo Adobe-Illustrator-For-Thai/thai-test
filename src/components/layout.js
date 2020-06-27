@@ -11,7 +11,17 @@ import { useStaticQuery, graphql } from "gatsby";
 
 import Header from "./header";
 
-import { ThemeProvider, CSSReset, theme ,Box,Text,Icon,List,ListItem} from "@chakra-ui/core";
+import {
+    ThemeProvider,
+    CSSReset,
+    theme,
+    Box,
+    Text,
+    Icon,
+    List,
+    ListItem,
+    Flex
+} from "@chakra-ui/core";
 
 const Layout = ({ children }) => {
     const data = useStaticQuery(graphql`
@@ -25,34 +35,54 @@ const Layout = ({ children }) => {
     `);
 
     return (
-        <ThemeProvider theme={theme}>
-            <CSSReset />
-            <Header siteTitle={data.site.siteMetadata.title} />
-            <div
-                style={{
-                    margin: `0 auto`,
-                    padding: `0 1.0875rem 1.45rem`,
-                }}
-            >
-                <main>{children}</main>
-            </div>
-            <footer>
-                   <Box bg="#DCDCDC" paddingTop="10px" overflow="auto" marginBottom="0">
-                       <Text padding="10px">Learn Thai Style</Text>
-                       <hr style={{
-                            margin: `0 10px`,
-                            backgroundColor: "#000",
-                            height: "1px",
-                        }}/>
-                       <List>
-                           <ListItem display="inline-block" float="left" margin="10px">
-                               <Icon name="edit" size="32px"></Icon>Language</ListItem>
-                           <ListItem display="inline-block" float="right" margin="10px">
-                               Contact Us</ListItem>
-                       </List>
-                   </Box>
+        <Flex minHeight="100vh" flexDirection="column">
+            <ThemeProvider theme={theme}>
+                <CSSReset />
+                <Header siteTitle={data.site.siteMetadata.title} />
+                <div
+                    style={{
+                        margin: `0 auto`,
+                        padding: `0 1.0875rem 1.45rem`,
+                        flex: 1
+                    }}
+                >
+                    <main>{children}</main>
+                </div>
+                <footer style={{bottom: 0}}>
+                    <Box
+                        bg="#DCDCDC"
+                        paddingTop="10px"
+                        overflow="auto"
+                        marginBottom="0"
+                    >
+                        <Text padding="10px">Learn Thai Style</Text>
+                        <hr
+                            style={{
+                                margin: `0 10px`,
+                                backgroundColor: "#000",
+                                height: "1px",
+                            }}
+                        />
+                        <List>
+                            <ListItem
+                                display="inline-block"
+                                float="left"
+                                margin="10px"
+                            >
+                                <Icon name="edit" size="32px"></Icon>Language
+                            </ListItem>
+                            <ListItem
+                                display="inline-block"
+                                float="right"
+                                margin="10px"
+                            >
+                                Contact Us
+                            </ListItem>
+                        </List>
+                    </Box>
                 </footer>
-        </ThemeProvider>
+            </ThemeProvider>
+        </Flex>
     );
 };
 
