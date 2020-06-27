@@ -7,13 +7,12 @@ import CenterFlex from "../../components/CenterFlex";
 import {
     Text,
     FormControl,
-    FormLabel,
     FormHelperText,
     Input,
     Button,
     Heading,
     Box,
-    Stack,
+    Grid,
     useTheme,
 } from "@chakra-ui/core";
 
@@ -25,11 +24,12 @@ const SUBMIT_API_URL =
 interface FileInputProps {
     file: File;
     setFile: (file: File) => void;
+    progress: number;
+    setProgress: (prog: number) => void;
 }
 let recordedChunks = [];
 const FileInput = (props: FileInputProps) => {
-    const playerRef = useRef<HTMLAudioElement>(null);
-    const [progress, setProgress] = useState<number>(-1);
+    const { progress, setProgress } = props;
     const startRecording = async () => {
         const devices = await navigator.mediaDevices
             .enumerateDevices()
@@ -61,14 +61,14 @@ const FileInput = (props: FileInputProps) => {
         mediaRecorder.onstop = stopListener;
         mediaRecorder.start();
         console.log("mediaRecorder", mediaRecorder);
-        setTimeout(() => mediaRecorder.stop(), 3000);
+        setTimeout(() => mediaRecorder.stop(), 2000);
         setProgress(0);
     };
 
     useEffect(() => {
         if (progress !== -1 && progress < 100) {
             setTimeout(() => {
-                setProgress(progress + 0.5);
+                setProgress(progress + 1);
             }, 8);
         }
     }, [progress]);
@@ -129,7 +129,6 @@ const questions = [
     "จัตุรัส",
     "จุติ",
     "กรุงเทพมหานคร",
-    "",
 ];
 
 enum SpeakingResult {
@@ -139,6 +138,16 @@ enum SpeakingResult {
     WRONG,
     ERROR,
     NONE,
+}
+
+interface ScoreDisplayProps {
+    text: string
+}
+const ScoreDisplay = (props: React.PropsWithChildren<ScoreDisplayProps>) => {
+    return <CenterFlex flexDirection="column">
+        <Text>{props.text}</Text>
+        <Heading>{props.children}</Heading>
+    </CenterFlex>
 }
 
 const getPrettyResult = (result) => {
@@ -161,13 +170,18 @@ const getPrettyResult = (result) => {
 const SpeakingPage = () => {
     const [file, setFile] = useState<File>();
     const [result, setResult] = useState<SpeakingResult>(SpeakingResult.NONE);
-    const [text, setText] = useState<string>("");
     const [questionIndex, setQuestionIndex] = useState<number>(0);
-    const [disableNext, setDisableNext] = useState<boolean>(false);
+    const [disableNext, setDisableNext] = useState<boolean>(true);
+    const [progress, setProgress] = useState<number>(-1);
+    const [accumulatedScore, setAccumulatedScore] = useState<number>(0);
+    const [currentScore, setCurrentScore] = useState<number>(0);
     const nextQuestion = () => {
         if (questionIndex === questions.length - 1) return;
-        setText(questions[questionIndex + 1]);
         setQuestionIndex(questionIndex + 1);
+        setDisableNext(true);
+        setProgress(-1);
+        setAccumulatedScore(accumulatedScore + currentScore);
+        setResult(SpeakingResult.NONE);
     };
     const submitFile = async () => {
         const formData = new FormData();
@@ -221,13 +235,15 @@ const SpeakingPage = () => {
             }
         }
     };
-    const nextProblem = () => {
-        setDisableNext(true);
-        setTimeout(() => {
-            nextQuestion();
-            setDisableNext(false);
-        }, 3000);
-    };
+    useEffect(() => {
+        if(file) submitFile().then(() => setFile(null))
+    }, [file]);
+    useEffect(() => {
+        if(result !== SpeakingResult.NONE && result !== SpeakingResult.LOADING) setDisableNext(false);
+        if(result === SpeakingResult.ACCEPTED) setCurrentScore(1);
+        else if(result === SpeakingResult.PARTIAL) setCurrentScore(0.5);
+        else setCurrentScore(0);
+    }, [result]);
     return (
         <Layout>
             <SEO title="Learn Thai as Thai style | Speaking Test" />
@@ -248,27 +264,27 @@ const SpeakingPage = () => {
                         >
                             {questions[questionIndex]}
                         </Heading>
-                        <FileInput file={file} setFile={setFile} />
+                        <FileInput file={file} setFile={setFile} progress={progress} setProgress={setProgress} />
                         <br />
-                        <Stack isInline>
+                        <Box w="100%" textAlign="right">
                             <Button
-                                onClick={() => submitFile()}
-                                isDisabled={
-                                    result === SpeakingResult.LOADING || !file
-                                }
-                            >
-                                Submit
-                            </Button>
-                            <Button
-                                onClick={() => nextProblem()}
+                                onClick={() => nextQuestion()}
                                 isDisabled={disableNext}
                             >
                                 Next
                             </Button>
-                        </Stack>
+                        </Box>
                         <CenterFlex width="100%">
                             <Heading>{getPrettyResult(result)}</Heading>
                         </CenterFlex>
+                        <Grid templateColumns="1fr 1fr" marginTop="10vh">
+                            <Box>
+                                <ScoreDisplay text="Current Score">{currentScore}</ScoreDisplay>
+                            </Box>
+                            <Box>
+                                <ScoreDisplay text="Total Score">{accumulatedScore}</ScoreDisplay>
+                            </Box>
+                        </Grid>
                     </Box>
                 </CenterFlex>
             </Box>
