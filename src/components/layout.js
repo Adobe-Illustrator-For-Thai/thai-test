@@ -8,8 +8,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { useStaticQuery, graphql } from "gatsby";
-
-import Header from "./header";
+import Links from "./links";
 
 import {
     ThemeProvider,
@@ -38,12 +37,13 @@ const Layout = ({ children }) => {
         <Flex minHeight="100vh" flexDirection="column">
             <ThemeProvider theme={theme}>
                 <CSSReset />
-                <Header siteTitle={data.site.siteMetadata.title} />
+                <Links />
                 <div
                     style={{
                         margin: `0 auto`,
                         padding: `0 1.0875rem 1.45rem`,
-                        flex: 1
+                        flex: 1,
+                        width: "100%"
                     }}
                 >
                     <main>{children}</main>
@@ -91,3 +91,4 @@ Layout.propTypes = {
 };
 
 export default Layout;
+                           

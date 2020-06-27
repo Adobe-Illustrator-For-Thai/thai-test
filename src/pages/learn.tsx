@@ -6,7 +6,6 @@ import {Box,Text,Image} from "@chakra-ui/core";
 const IndexPage = () => (
     <Layout>
         <SEO title="Learn Thai as Thai style | Learn" />
-        <Links />
         <Box margin="50px 10px">
             <Text fontSize="0.9em">Learning</Text>
             <Text fontSize="2em">How to Read Thai Letter</Text>

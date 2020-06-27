@@ -6,7 +6,6 @@ import Links from "../components/links";
 const IndexPage = () => (
     <Layout>
         <SEO title="Learn Thai as Thai style | Home" />
-        <Links />
     </Layout>
 );
 

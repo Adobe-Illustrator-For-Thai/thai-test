@@ -42,7 +42,6 @@ language practice platform for everyone."/></Box>
 const AboutPage = () => (
     <Layout>
         <SEO title="Learn Thai as Thai style | About" />
-        <Links />
         <Cards />
     </Layout>
 );

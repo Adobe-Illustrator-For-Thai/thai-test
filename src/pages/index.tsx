@@ -39,7 +39,6 @@ const Cards = () => {
 const IndexPage = () => (
     <Layout>
         <SEO title="Learn Thai as Thai style | Home" />
-        <Links />
         <Cards />
     </Layout>
 );
