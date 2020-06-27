@@ -11,10 +11,11 @@ import {
     FormHelperText,
     Input,
     Button,
+    Heading
 } from "@chakra-ui/core";
 
 const SPEAKING_API_URL = "https://api.aiforthai.in.th/partii-webapi";
-//    "https://asia-east2-thai-test-67d93.cloudfunctions.net/speaking/word";
+const SOUNDEX_API_URL = "https://api.aiforthai.in.th/soundex";
 
 interface FileInputProps {
     file: File;
@@ -39,7 +40,8 @@ const FileInput = (props: FileInputProps) => {
                 id="cvfile"
                 name="cvfile"
                 onChange={(e) => trackFiles(e.target.files)}
-                accept=".wav"
+                accept="audio/wav;capture=microphone"
+                capture
             />
             <Input as="div" p="0.5rem" height="auto">
                 <Button onClick={promptFileUpload} height="2rem">
@@ -54,34 +56,74 @@ const FileInput = (props: FileInputProps) => {
     );
 };
 
+const questions = ["สวัสดี", "ไก่", "กา", "ไข่", "กิน", "ข้าว", "มือ", "เท้า", "งู", "วัว", "ไทย", "จบ", "ขอบคุณ", "ศศิธร", "จัตุรัส", "จุติ", "กรุงเทพมหานคร", ""]
+
+enum SpeakingResult {
+    LOADING,
+    ACCEPTED,
+    PARTIAL,
+    WRONG,
+    ERROR,
+    NONE
+}
+
 const SpeakingPage = () => {
     const [file, setFile] = useState<File>();
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const submitFile = () => {
+    const [result, setResult] = useState<SpeakingResult>(SpeakingResult.NONE);
+    const [text, setText] = useState<string>("");
+    const [questionIndex, setQuestionIndex] = useState<number>(0);
+    const nextQuestion = () => {
+        if(questionIndex === questions.length-1) return;
+        setText(questions[questionIndex+1]);
+        setQuestionIndex(questionIndex + 1);
+    }
+    const submitFile = async () => {
         const formData = new FormData();
         formData.append("format", "json");
         formData.append("wavfile", file);
-        setIsLoading(true);
+        setResult(SpeakingResult.LOADING);
         console.log("Submitting");
-        fetch(SPEAKING_API_URL, {
+        const res = await fetch(SPEAKING_API_URL, {
             method: "POST",
             mode: "cors",
             body: formData,
             headers: { Apikey: "E6XUGhTP29Tm1Tepcy4fWbZ1CyzMOVxY" }
-        })
-            .then((res) => {
-                setIsLoading(false);
-                if (!res.ok) {
-                    alert("Fail");
+        });
+        if (!res.ok) {
+            setResult(SpeakingResult.ERROR);
+            return;
+        }
+        const rjson = await res.json();
+        const word : string = rjson.result.split(" ").join("");
+        if(word === questions[questionIndex]){
+            setResult(SpeakingResult.ACCEPTED);
+        }else{
+            const soundexRes = await fetch(SOUNDEX_API_URL + `?word=${encodeURIComponent(word)}&model=royin`, {
+                method: "GET",
+                mode: "cors",
+                headers: { 
+                    Apikey : "E6XUGhTP29Tm1Tepcy4fWbZ1CyzMOVxY",
+                    "Content-Type": "application/x-www-form-urlencoded"
                 }
-                return res.json();
-            })
-            .then((rjson) => console.log(rjson))
-            .catch((e) => console.error(e));
+            });
+            if(!soundexRes.ok){
+                console.log("soundex fail");
+                setResult(SpeakingResult.WRONG);
+                return;
+            }
+            const soundexJson = await soundexRes.json();
+            if(soundexJson.words.filter(targetWord => targetWord.word === word).length > 0){
+                setResult(SpeakingResult.PARTIAL);
+            }else{
+                setResult(SpeakingResult.WRONG);
+            }
+        }
     };
     return (
         <Layout>
             <SEO title="Learn Thai as Thai style | Speaking Test" />
+            <Heading>คำถาม</Heading>
+            <Text>{questions[questionIndex]}</Text>
             <FileInput file={file} setFile={setFile} />
             <Button onClick={submitFile}>Submit</Button>
         </Layout>
