@@ -44,7 +44,8 @@ const Layout = ({ children }) => {
                         margin: `0 auto`,
                         flex: 1,
                         width: "100%",
-                        height: "100%"
+                        height: "100%",
+                        display: "flex"
                     }}
                 >
                     {children}
