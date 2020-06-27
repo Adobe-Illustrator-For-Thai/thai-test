@@ -36,6 +36,7 @@ const submit = async (req: any, res: any) => {
         );
         const content = fs.readFileSync(ppath);
         */
+        console.log('[DEBUG]',(file.buffer as Buffer).slice(0, 32));
         const formData = new FormData();
         formData.append("wavfile", file.buffer);
         formData.append("format", "json");
