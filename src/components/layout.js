@@ -39,16 +39,16 @@ const Layout = ({ children }) => {
             <ThemeProvider theme={theme}>
                 <CSSReset />
                 <Links />
-                <div
+                <main
                     style={{
                         margin: `0 auto`,
-                        padding: `0 1.0875rem 1.45rem`,
                         flex: 1,
-                        width: "100%"
+                        width: "100%",
+                        height: "100%"
                     }}
                 >
-                    <main>{children}</main>
-                </div>
+                    {children}
+                </main>
                 <footer style={{bottom: 0}}>
                     <Box
                         bg="#DCDCDC"

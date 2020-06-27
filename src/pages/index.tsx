@@ -9,7 +9,8 @@ import {
     Image,
     Heading,
     Text,
-    Stack
+    Stack,
+    Flex
 } from '@chakra-ui/core';
 
 interface CardProps {
@@ -18,7 +19,7 @@ interface CardProps {
     content: string
 }
 const Card = ({imageSrc, header, content}: CardProps) => {
-    return <Box width="50vmin" height="70vmin" shadow="md" rounded="lg">
+    return <Box width={["80vw", "80vw", "80vw", "25vw"]} height="65vmin" shadow="md" rounded="lg">
         <CenterFlex width="100%" height="50vmin" overflow="hidden">
             <Image roundedTop="lg" mb="0" src={imageSrc} width="auto" height="100%" objectFit="cover"></Image>
         </CenterFlex>
@@ -30,12 +31,11 @@ const Card = ({imageSrc, header, content}: CardProps) => {
 }
 
 const Cards = () => {
-    return <Stack isInline overflow="scroll">
-        <Box padding="0px 8vmin" rounded="lg"><Card imageSrc="https://sites.google.com/site/indochinappk/_/rsrc/1468738929801/manu3/101451241.jpg" header="Learn through real situation" content="To understand more about Thai language, we present you Thai article in your language for understanding Thai's basic."/></Box>
-        <Box padding="0px 8vmin" rounded="lg"><Card imageSrc="https://cdn-cms.pgimgs.com/static/2020/04/Learn-online.jpg" header="Listen Thai's speech from native AI" content="We introduce you new normal of learning Thai by reading Thai's article to speech."/></Box>
-        <Box padding="0px 8vmin" rounded="lg"><Card imageSrc="https://www.omothailand.com/upload/images/59001c222df45.png" header="Speak Thai instead of Tai" content="Don't know how to speech Thai correctly?
-        Don't worry, we have evaluation system for you."/></Box>
-    </Stack>
+    return <CenterFlex flexDir={["column", "column", "column", "row"]} width="100vw" height="100%">
+        <Box padding="0px 15px" rounded="lg"><Card imageSrc="https://sites.google.com/site/indochinappk/_/rsrc/1468738929801/manu3/101451241.jpg" header="Learn through real situation" content="To understand more about Thai language, we present you Thai article in your language for understanding Thai's basic."/></Box>
+        <Box padding="0px 15px" rounded="lg"><Card imageSrc="https://cdn-cms.pgimgs.com/static/2020/04/Learn-online.jpg" header="Listen Thai's speech from native AI" content="We introduce you new normal of learning Thai by reading Thai's article to speech."/></Box>
+        <Box padding="0px 15px" rounded="lg"><Card imageSrc="https://www.omothailand.com/upload/images/59001c222df45.png" header="Speak Thai instead of Tai" content="Don't know how to speech Thai correctly? Don't worry, we have evaluation system for you."/></Box>
+    </CenterFlex>
 }
 
 const IndexPage = () => (
