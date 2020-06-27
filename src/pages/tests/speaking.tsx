@@ -25,59 +25,44 @@ interface FileInputProps {
     file: File;
     setFile: (file: File) => void;
 }
+let recordedChunks = [];
 const FileInput = (props: FileInputProps) => {
-    const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder>(null);
-    const [recordedChunks, setRecordedChunks] = useState<Array<Blob>>([]);
-    const [stream, setStream] = useState<MediaStream>(null);
+    const playerRef = useRef<HTMLAudioElement>(null);
     const [progress, setProgress] = useState<number>(-1);
-    const startRecording = () => {
-        navigator.mediaDevices
+    const startRecording = async () => {
+        const devices = await navigator.mediaDevices
             .enumerateDevices()
             .then((devices) => {
-                return devices.filter((d) => d.kind === "audioinput")[0]
-                    .deviceId;
-            })
-            .then((deviceId) =>
-                navigator.mediaDevices.getUserMedia({ audio: { deviceId } })
-            )
-            .then((currentStream) => {
-                const options = { mimeType: "audio/webm" };
-                const currentMediaRecorder = new MediaRecorder(
-                    currentStream,
-                    options
-                );
-                setMediaRecorder(currentMediaRecorder);
-                currentMediaRecorder.start();
-                setStream(currentStream);
-                setTimeout(() => currentMediaRecorder.stop(), 3000);
-                setProgress(0);
+                return devices.filter((d) => d.kind === "audioinput");
             });
-    };
-
-    useEffect(() => {
-        if (!mediaRecorder) return;
-        const listener = (e) => {
+        const stream = await navigator.mediaDevices.getUserMedia({
+            audio: {
+                deviceId: devices[0].deviceId,
+            },
+        });
+        const options = { mimeType: "audio/webm" };
+        const mediaRecorder = new MediaRecorder(stream, options);
+        recordedChunks = [];
+        console.log("mediaRecorder", mediaRecorder);
+        const dataListener = (e: BlobEvent) => {
             if (e.data.size > 0) {
-                setRecordedChunks([...recordedChunks, e.data]);
+                recordedChunks.push(e.data);
             }
         };
-        mediaRecorder.addEventListener("dataavailable", listener);
-        return () =>
-            mediaRecorder.removeEventListener("dataavailable", listener);
-    }, [mediaRecorder]);
-
-    useEffect(() => {
-        if (!mediaRecorder) return;
-        const listener = () => {
+        mediaRecorder.ondataavailable = dataListener;
+        const stopListener = () => {
             const recordedBlob: any = new Blob(recordedChunks);
             recordedBlob.lastModifiedDate = new Date();
             recordedBlob.name = "submission.webm";
             props.setFile(recordedBlob);
             stream.getTracks().forEach((track) => track.stop());
         };
-        mediaRecorder.addEventListener("stop", listener);
-        return () => mediaRecorder.removeEventListener("stop", listener);
-    }, [mediaRecorder, stream]);
+        mediaRecorder.onstop = stopListener;
+        mediaRecorder.start();
+        console.log("mediaRecorder", mediaRecorder);
+        setTimeout(() => mediaRecorder.stop(), 3000);
+        setProgress(0);
+    };
 
     useEffect(() => {
         if (progress !== -1 && progress < 100) {
@@ -90,6 +75,7 @@ const FileInput = (props: FileInputProps) => {
     const theme = useTheme();
     return (
         <FormControl>
+            <audio id="player" ref={playerRef} controls></audio>
             <br />
             <Input as="div" p="0.5rem" height="auto">
                 <Box
@@ -111,7 +97,7 @@ const FileInput = (props: FileInputProps) => {
                     </Box>
                 </Box>
                 <Button
-                    onClick={startRecording}
+                    onClick={() => startRecording()}
                     isDisabled={progress !== -1 && progress < 100}
                     height="2rem"
                 >
