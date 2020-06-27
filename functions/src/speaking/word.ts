@@ -18,6 +18,7 @@ const word = async (req: any, res: any) => {
         const formData = new FormData();
         formData.append("wavfile", "data:audio/wav;base64,"+file.buffer.toString("base64"));
         formData.append("format", "json");
+        console.log('[formData]', formData);
         const APIRequest = https.request({
             method: "POST",
             host: "api.aiforthai.in.th",
