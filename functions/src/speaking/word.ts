@@ -1,4 +1,3 @@
-import * as FormData from "form-data";
 import * as https from "https";
 
 /**
@@ -15,24 +14,22 @@ const word = async (req: any, res: any) => {
             res.status(400).send("File not found");
             return;
         }
-        const formData = new FormData();
-        formData.append("wavfile", "data:audio/wav;base64,"+file.buffer.toString("base64"));
-        formData.append("format", "json");
-        console.log('[formData]', formData);
-        const APIRequest = https.request({
-            method: "POST",
-            host: "api.aiforthai.in.th",
-            path: "/partii-webapi",
-            port: 443,
-            headers: {
-                ...formData.getHeaders(),
-                Apikey: "E6XUGhTP29Tm1Tepcy4fWbZ1CyzMOVxY",
-            },
+        const bufferResponse = await new Promise<any>((resolve) => {
+            const APIRequest = https.request({
+                method: "POST",
+                host: "api.aiforthai.in.th",
+                path: "/partii-webapi",
+                port: 443,
+                headers: {
+                    Apikey: "E6XUGhTP29Tm1Tepcy4fWbZ1CyzMOVxY",
+                },
+            }, (resp) => resolve(resp));
+            APIRequest.write(JSON.stringify({
+                wavfile: "data:audio/wav;base64,"+file.buffer.toString("base64"),
+                format: "json"
+            }));
+            APIRequest.end();
         });
-        formData.pipe(APIRequest);
-        const bufferResponse = await new Promise<any>((resolve) =>
-            APIRequest.on("response", (resp) => resolve(resp))
-        );
         const resStatusCode = bufferResponse.statusCode;
         console.log("[responseStatus]", resStatusCode);
         const responseString = (
