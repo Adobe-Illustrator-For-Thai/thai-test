@@ -23,8 +23,8 @@ const Card = ({imageSrc, header, content}: CardProps) => {
             <Image roundedTop="lg" mb="0" src={imageSrc} width="auto" height="100%" objectFit="cover"></Image>
         </CenterFlex>
         <Box m="15px">
-            <Heading fontFamily="Mitr serif">{header}</Heading>
-            <Text fontFamily="Quark sans-serif">{content}</Text>
+            <Heading fontFamily="Mitr, sans-serif">{header}</Heading>
+            <Text fontFamily="Quark, sans-serif">{content}</Text>
         </Box>
     </Box>;
 }

@@ -22,7 +22,7 @@ const loginPage = () => (
     <Layout>
         <SEO title="Learn Thai as Thai style | Login" />
         <Box padding="10vmin 20%">
-        <Text fontFamily="Lato, sans-serif" fontSize="3xl">Sign in</Text>
+        <Text padding="2% 0px" fontFamily="Lato, sans-serif" fontSize="4xl">Sign in</Text>
         <Text fontFamily="Lato, sans-serif" fontSize="6xl"> </Text>
         <Stack spacing={3}>
             <Text fontFamily="Mitr, sans-serif" fontSize="lg">Email Address</Text>
