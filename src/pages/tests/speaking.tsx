@@ -79,16 +79,7 @@ const FileInput = (props: FileInputProps) => {
             <audio id="player" ref={playerRef} controls></audio>
             <br />
             <Input as="div" p="0.5rem" height="auto">
-                <Box
-                    position="absolute"
-                    left="0"
-                    w={Math.max(progress, 0) + "%"}
-                    h="100%"
-                    bg={theme.colors.black}
-                    rounded="md"
-                    textAlign="right"
-                    color={theme.colors.red[400]}
-                >
+                <Box position="absolute" left="0" w={Math.max(progress, 0)+"%"} h="100%" bg="#68D391" rounded="md" textAlign="right" color={theme.colors.white}>
                     <Box h="100%" display="inline-block">
                         <CenterFlex h="100%" marginX="0.5rem">
                             <Text fontWeight="700" marginY="auto">
@@ -233,9 +224,9 @@ const SpeakingPage = () => {
         <Layout>
             <SEO title="Learn Thai as Thai style | Speaking Test" />
             <CenterFlex>
-                <Box width={["90vw", "90vw", "50vw"]}>
-                    <Heading>Pronouce this:</Heading>
-                    <Heading>{questions[questionIndex]}</Heading>
+                <Box  width={["90vw", "90vw", "50vw"]}>
+                    <Heading padding="20px 0px"fontFamily="Lato, sans-serif" fontSize="40px">Pronouce this:</Heading>
+                    <Heading padding="5px" fontFamily="Lato, sans-serif" fontSize="36px">{questions[questionIndex]}</Heading>
                     <FileInput file={file} setFile={setFile} />
                     <br />
                     <Stack isInline>
