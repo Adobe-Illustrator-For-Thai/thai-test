@@ -22,13 +22,12 @@ const submit = async (req: any, res: any) => {
             return;
         }
         const fname = v4();
-        const fpath = path.join(os.tmpdir(), fname + ".webm");
+        const fpath = path.join(os.tmpdir(), fname + "-original.wav");
         fs.writeFileSync(fpath, file.buffer);
         const ppath = path.join(os.tmpdir(), fname + ".wav");
         await new Promise<void>((resolve) =>
             ffmpeg(fpath)
                 .setFfmpegPath(ffmpeg_static)
-                .format("webm")
                 .noVideo()
                 .audioBitrate(16)
                 .audioFrequency(16000)
