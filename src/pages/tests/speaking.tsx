@@ -132,6 +132,23 @@ enum SpeakingResult {
     NONE,
 }
 
+const getPrettyResult = (result) => {
+    switch(result){
+        case SpeakingResult.LOADING:
+            return "Loading";
+        case SpeakingResult.ACCEPTED:
+            return "Correct Answer";
+        case SpeakingResult.PARTIAL:
+            return "Partially Correct";
+        case SpeakingResult.WRONG:
+            return "Wrong Answer";
+        case SpeakingResult.ERROR:
+            return "Unexpected Error";
+        case SpeakingResult.NONE:
+            return "";
+    }
+}
+
 const SpeakingPage = () => {
     const [file, setFile] = useState<File>();
     const [result, setResult] = useState<SpeakingResult>(SpeakingResult.NONE);
@@ -142,53 +159,55 @@ const SpeakingPage = () => {
         setText(questions[questionIndex + 1]);
         setQuestionIndex(questionIndex + 1);
     };
-    const submitFile = async () => {
+    const submitFile = () => {
         const formData = new FormData();
         formData.append("format", "json");
         formData.append("wavfile", file);
         setResult(SpeakingResult.LOADING);
         console.log("Submitting");
-        const res = await fetch(SPEAKING_API_URL, {
-            method: "POST",
-            mode: "cors",
-            body: formData,
-            headers: { Apikey: "E6XUGhTP29Tm1Tepcy4fWbZ1CyzMOVxY" },
-        });
-        if (!res.ok) {
-            setResult(SpeakingResult.ERROR);
-            return;
-        }
-        const rjson = await res.json();
-        const word: string = rjson.result.split(" ").join("");
-        if (word === questions[questionIndex]) {
-            setResult(SpeakingResult.ACCEPTED);
-        } else {
-            const soundexRes = await fetch(
-                SOUNDEX_API_URL +
-                    `?word=${encodeURIComponent(word)}&model=royin`,
-                {
-                    method: "GET",
-                    mode: "cors",
-                    headers: {
-                        Apikey: "E6XUGhTP29Tm1Tepcy4fWbZ1CyzMOVxY",
-                        "Content-Type": "application/x-www-form-urlencoded",
-                    },
-                }
-            );
-            if (!soundexRes.ok) {
-                console.log("soundex fail");
-                setResult(SpeakingResult.WRONG);
+        async () => {
+            const res = await fetch(SPEAKING_API_URL, {
+                method: "POST",
+                mode: "cors",
+                body: formData,
+                headers: { Apikey: "E6XUGhTP29Tm1Tepcy4fWbZ1CyzMOVxY" },
+            });
+            if (!res.ok) {
+                setResult(SpeakingResult.ERROR);
                 return;
             }
-            const soundexJson = await soundexRes.json();
-            if (
-                soundexJson.words.filter(
-                    (targetWord) => targetWord.word === word
-                ).length > 0
-            ) {
-                setResult(SpeakingResult.PARTIAL);
+            const rjson = await res.json();
+            const word: string = rjson.result.split(" ").join("");
+            if (word === questions[questionIndex]) {
+                setResult(SpeakingResult.ACCEPTED);
             } else {
-                setResult(SpeakingResult.WRONG);
+                const soundexRes = await fetch(
+                    SOUNDEX_API_URL +
+                        `?word=${encodeURIComponent(word)}&model=royin`,
+                    {
+                        method: "GET",
+                        mode: "cors",
+                        headers: {
+                            Apikey: "E6XUGhTP29Tm1Tepcy4fWbZ1CyzMOVxY",
+                            "Content-Type": "application/x-www-form-urlencoded",
+                        },
+                    }
+                );
+                if (!soundexRes.ok) {
+                    console.log("soundex fail");
+                    setResult(SpeakingResult.WRONG);
+                    return;
+                }
+                const soundexJson = await soundexRes.json();
+                if (
+                    soundexJson.words.filter(
+                        (targetWord) => targetWord.word === word
+                    ).length > 0
+                ) {
+                    setResult(SpeakingResult.PARTIAL);
+                } else {
+                    setResult(SpeakingResult.WRONG);
+                }
             }
         }
     };
@@ -201,7 +220,10 @@ const SpeakingPage = () => {
                     <Heading>{questions[questionIndex]}</Heading>
                     <FileInput file={file} setFile={setFile} />
                     <br />
-                    <Button onClick={submitFile}>Submit</Button>
+                    <Button onClick={submitFile} isDisabled={result === SpeakingResult.LOADING}>Submit</Button>
+                    <CenterFlex width="100%">
+                        <Heading>{ getPrettyResult(result) }</Heading>
+                    </CenterFlex>
                 </Box>
             </CenterFlex>
         </Layout>
