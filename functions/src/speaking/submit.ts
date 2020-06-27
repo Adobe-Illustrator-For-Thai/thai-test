@@ -28,7 +28,7 @@ const submit = async (req: any, res: any) => {
         await new Promise((resolve) =>
             ffmpeg(fpath)
                 .setFfmpegPath(ffmpeg_static)
-                .outputOptions(["-f s16le", "-ac 1", "-ar 16000"])
+                .outputOptions(["-f wav", "-ac 1", "-ar 16000"])
                 .output(ppath)
                 .on("end", () => resolve())
                 .run()
