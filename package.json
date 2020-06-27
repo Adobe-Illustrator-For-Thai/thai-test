@@ -8,6 +8,7 @@
     "@chakra-ui/core": "^0.8.0",
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
+    "@reach/visually-hidden": "^0.10.4",
     "@types/dom-mediacapture-record": "^1.0.6",
     "@types/react": "^16.9.41",
     "emotion-theming": "^10.0.27",

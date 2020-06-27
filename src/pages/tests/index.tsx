@@ -24,7 +24,7 @@ const Card = ({header, content,to}: CardProps) => {
         </Box>
         <Box m="15px" textAlign="right">
             <Link to={to}>
-                <Button margin="0 1% 1%" bg="#4FD1C5" color="#fff" rounded="lg">Start Your Test</Button>
+                <Button fontSize="20px" margin="0 1% 1%" bg="#4FD1C5" color="#fff" rounded="lg">Start Your Test</Button>
             </Link>
         </Box>
     </Box>
