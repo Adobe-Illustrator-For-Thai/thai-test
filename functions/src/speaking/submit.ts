@@ -22,7 +22,7 @@ const submit = async (req: any, res: any) => {
             return;
         }
         const fname = v4();
-        const fpath = path.join(os.tmpdir(), fname + "-original.wav");
+        const fpath = path.join(os.tmpdir(), fname + "-original.webm");
         fs.writeFileSync(fpath, file.buffer);
         const ppath = path.join(os.tmpdir(), fname + ".wav");
         ffmpeg(fpath)
