@@ -28,8 +28,11 @@ const submit = async (req: any, res: any) => {
         await new Promise<void>((resolve) =>
             ffmpeg(fpath)
                 .setFfmpegPath(ffmpeg_static)
+                .inputOptions([
+                    '-f s16be',
+                    '-ac 1'
+                ])
                 .noVideo()
-                .audioBitrate(16)
                 .audioFrequency(16000)
                 .audioChannels(1)
                 .save(ppath)
