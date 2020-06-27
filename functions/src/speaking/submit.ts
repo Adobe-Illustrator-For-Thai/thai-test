@@ -25,11 +25,14 @@ const submit = async (req: any, res: any) => {
         const fpath = path.join(os.tmpdir(), fname + "-original.webm");
         fs.writeFileSync(fpath, file.buffer);
         const ppath = path.join(os.tmpdir(), fname + ".wav");
-        ffmpeg(fpath)
-            .setFfmpegPath(ffmpeg_static)
-            .outputOptions(["-f s16be", "-ac 1", "-ar 16000"])
-            .output(ppath)
-            .run();
+        await new Promise((resolve) =>
+            ffmpeg(fpath)
+                .setFfmpegPath(ffmpeg_static)
+                .outputOptions(["-f s16be", "-ac 1", "-ar 16000"])
+                .output(ppath)
+                .on("end", () => resolve())
+                .run()
+        );
         const formData = new FormData();
         const content = fs.readFileSync(ppath);
         formData.append("wavfile", content);
