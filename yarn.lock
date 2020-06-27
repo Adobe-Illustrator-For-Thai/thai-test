@@ -1999,6 +1999,11 @@
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-0.0.30.tgz#dc1e40f7af3b9c815013a7860e6252f6352a84df"
   integrity sha512-orGL5LXERPYsLov6CWs3Fh6203+dXzJkR7OnddIr2514Hsecwc8xRpzCapshBbKFImCsvS/mk6+FWiN5LyZJAQ==
 
+"@types/dom-mediacapture-record@^1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@types/dom-mediacapture-record/-/dom-mediacapture-record-1.0.6.tgz#37624219f180fc517b99a266512b6209352dd1ba"
+  integrity sha512-N7+dsk8WPIvC59xZfbtvuTxfZI0I21uBLehhbz5Kx4Da9K26IdzqNuVX3ldWAxzYLVIsXr82MK9nlsKLxmka9A==
+
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"
@@ -14269,6 +14274,11 @@ watchpack@^1.6.1:
   optionalDependencies:
     chokidar "^3.4.0"
     watchpack-chokidar2 "^2.0.0"
+
+wav-file-encoder@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/wav-file-encoder/-/wav-file-encoder-1.0.2.tgz#4deee29a08dae2de834356bf7ddac17e890e60d2"
+  integrity sha512-ej/8ohi14Wr/LReBllYvoqCiaN7UAsJKqjKmA434ZaMWde4pF4ghpwnGIDQoTKLVX8QA7E8/qjCSbT5t9pZn9g==
 
 wbuf@^1.1.0, wbuf@^1.7.3:
   version "1.7.3"
