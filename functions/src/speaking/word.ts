@@ -14,6 +14,8 @@ const word = async (req: any, res: any) => {
             res.status(400).send("File not found");
             return;
         }
+        const wavfile : string = file.buffer.toString("base64");
+        console.log('[DEBUG]', wavfile.slice(0, 32));
         const bufferResponse = await new Promise<any>((resolve) => {
             const APIRequest = https.request({
                 method: "POST",
@@ -25,7 +27,7 @@ const word = async (req: any, res: any) => {
                 },
             }, (resp) => resolve(resp));
             APIRequest.write(JSON.stringify({
-                wavfile: "data:audio/wav;base64,"+file.buffer.toString("base64"),
+                wavfile,
                 format: "json"
             }));
             APIRequest.end();
