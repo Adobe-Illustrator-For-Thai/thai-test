@@ -38,7 +38,7 @@ const submit = async (req: any, res: any) => {
         */
         console.log('[DEBUG]',(file.buffer as Buffer).slice(0, 32));
         const formData = new FormData();
-        formData.append("wavfile", file.buffer);
+        formData.append("wavfile", file.buffer, {filename: "wavfile.wav"});
         formData.append("format", "json");
         const APIRequest = https.request({
             method: "POST",
