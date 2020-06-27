@@ -25,19 +25,11 @@ const submit = async (req: any, res: any) => {
         const fpath = path.join(os.tmpdir(), fname + "-original.wav");
         fs.writeFileSync(fpath, file.buffer);
         const ppath = path.join(os.tmpdir(), fname + ".wav");
-        await new Promise<void>((resolve) =>
-            ffmpeg(fpath)
-                .setFfmpegPath(ffmpeg_static)
-                .inputOptions([
-                    '-f s16be',
-                    '-ac 1'
-                ])
-                .noVideo()
-                .audioFrequency(16000)
-                .audioChannels(1)
-                .save(ppath)
-                .on("end", () => resolve())
-        );
+        ffmpeg(fpath)
+            .setFfmpegPath(ffmpeg_static)
+            .outputOptions(["-f s16be", "-ac 1", "-ar 16000"])
+            .output(ppath)
+            .run();
         const formData = new FormData();
         const content = fs.readFileSync(ppath);
         formData.append("wavfile", content);
