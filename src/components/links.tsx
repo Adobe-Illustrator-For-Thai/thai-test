@@ -12,7 +12,7 @@ const Links = () => {
         <>
             <Box as="nav" margin="20px">
                 <List textAlign="end">
-                    <ListItem float="left" padding="0 10px" fontFamily="Lora" fontSize="2em"><Link to="/question/question-3">Learn Thai Style</Link></ListItem>
+                    <ListItem float="left" padding="0 10px" fontFamily="Lora" fontSize="2em"><Link to="/">Learn Thai Style</Link></ListItem>
                     <ItemRender to="/tests">Test</ItemRender>
                     <ItemRender to="/learn">Learn</ItemRender>
                     <ItemRender to="/about">About Us</ItemRender>
