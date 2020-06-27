@@ -6,7 +6,7 @@ import {Box,Button,Input} from "@chakra-ui/core";
 
 const IndexPage = () => (
     <Layout>
-        <SEO title="Learn Thai as Thai style | Home" />
+        <SEO title="Learn Thai as Thai style | Listening" />
         <Links />
         <Box padding="23vmin 30%">
             <Box border="1px" padding="10px" textAlign="center" >
