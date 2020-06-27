@@ -13,8 +13,8 @@ import {
     Button,
 } from "@chakra-ui/core";
 
-const SPEAKING_API_URL =
-    "https://asia-east2-thai-test-67d93.cloudfunctions.net/speaking/word";
+const SPEAKING_API_URL = "https://api.aiforthai.in.th/partii-webapi";
+//    "https://asia-east2-thai-test-67d93.cloudfunctions.net/speaking/word";
 
 interface FileInputProps {
     file: File;
@@ -59,14 +59,15 @@ const SpeakingPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const submitFile = () => {
         const formData = new FormData();
-        formData.append("text", "PLACEHOLDER");
-        formData.append("file", file);
+        formData.append("format", "json");
+        formData.append("wavfile", file);
         setIsLoading(true);
         console.log("Submitting");
         fetch(SPEAKING_API_URL, {
             method: "POST",
             mode: "cors",
             body: formData,
+            headers: { Apikey: "E6XUGhTP29Tm1Tepcy4fWbZ1CyzMOVxY" }
         })
             .then((res) => {
                 setIsLoading(false);
