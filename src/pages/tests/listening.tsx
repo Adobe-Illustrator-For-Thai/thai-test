@@ -96,6 +96,7 @@ const IndexPage = () => {
         setText(questions[questionIndex + 1]);
         setQuestionIndex(questionIndex + 1);
         setAnswer("");
+        setResult(ListenResult.NONE);
     };
 
     const checkAnswer = () => {
@@ -108,8 +109,9 @@ const IndexPage = () => {
     return (
         <Layout>
             <SEO title="Learn Thai as Thai style | Listening" />
+            <Box flex="1">
             <Box padding="23vmin 30%">
-                Question Number {questionIndex+1}
+                <Heading>Question Number {questionIndex+1}</Heading>
                 <Box border="1px" padding="10px" rounded="lg">
                     Listen to This Word
                     <br />
@@ -147,9 +149,14 @@ const IndexPage = () => {
                         Next{" "}
                     </Button>
                 </ButtonGroup>
-                <CenterFlex width="100%">
+                <CenterFlex width="100%" >
                     <Heading>{getPrettyResult(result)}</Heading>
                 </CenterFlex>
+                <CenterFlex>
+                    <br/>
+                    {result === ListenResult.WRONG ? <Heading>Correct Answer is {questions[questionIndex]}</Heading> : ""}
+                </CenterFlex>
+            </Box>
             </Box>
         </Layout>
     );
