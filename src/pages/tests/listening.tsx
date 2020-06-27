@@ -2,31 +2,63 @@ import React, { useState, useEffect } from "react";
 import Layout from "../../components/layout";
 import SEO from "../../components/seo";
 import Links from "../../components/links";
-import { Box, Button, ButtonGroup, Input } from "@chakra-ui/core";
-import * as WavFileEncoder from "wav-file-encoder";
+import CenterFlex from "../../components/CenterFlex"
+import { Box, Button, ButtonGroup, Input, Heading, Stack} from "@chakra-ui/core";
 const LISTENING_API_URL = "https://api.aiforthai.in.th/vaja?mode=st&text=";
 
+const questions = [
+    "สวัสดี",
+    "ไก่",
+    "กา",
+    "ไข่",
+    "กิน",
+    "ข้าว",
+    "มือ",
+    "เท้า",
+    "งู",
+    "วัว",
+    "ไทย",
+    "จบ",
+    "ขอบคุณ",
+    "ศศิธร",
+    "จัตุรัส",
+    "จุติ",
+    "กรุงเทพมหานคร",
+    "",
+];
+
+enum ListenResult {
+    LOADING,
+    ACCEPTED,
+    PARTIAL,
+    WRONG,
+    ERROR,
+    NONE,
+}
+
+const getPrettyResult = (result) => {
+    switch (result) {
+        case ListenResult.LOADING:
+            return "Loading";
+        case ListenResult.ACCEPTED:
+            return "Correct Answer";
+        case ListenResult.PARTIAL:
+            return "Partially Correct";
+        case ListenResult.WRONG:
+            return "Wrong Answer";
+        case ListenResult.ERROR:
+            return "Unexpected Error";
+        case ListenResult.NONE:
+            return "";
+    }
+};
+
 const IndexPage = () => {
-    const [result, setResult] = useState<string>();
-
-    const wavData = (
-        channels: number,
-        length: number,
-        sampleRate: number,
-        file: any
-    ): AudioBuffer => {
-        const audioBuffer: AudioBuffer = new AudioBuffer({
-            length,
-            numberOfChannels: channels,
-            sampleRate,
-        });
-        const channelData = audioBuffer.getChannelData(0);
-        file.forEach((data, i) => {
-            channelData[i] = data;
-        });
-        return audioBuffer;
-    };
-
+    const [result, setResult] = useState<ListenResult>(ListenResult.NONE);
+    const [text, setText] = useState<string>("");
+    const [questionIndex, setQuestionIndex] = useState<number>(0);
+    const [disableNext, setDisableNext] = useState<boolean>(false);
+    const [answer, setAnswer] = useState<string>("");
     function getBufferCallback(
         channels: number,
         length: number,
@@ -42,7 +74,7 @@ const IndexPage = () => {
         newSource.start(0);
     }
     const getSound = async (word: string) => {
-        console.log("send");
+        setResult(ListenResult.LOADING);
         const newUrl = LISTENING_API_URL + encodeURIComponent(word);
         const res = await fetch(newUrl, {
             method: "POST",
@@ -50,33 +82,54 @@ const IndexPage = () => {
             headers: { Apikey: "E6XUGhTP29Tm1Tepcy4fWbZ1CyzMOVxY" },
         });
         if (!res.ok) {
-            setResult("Not Okay");
+            setResult(ListenResult.ERROR);
             return;
         }
-        setResult("Okay");
         const rjson = await res.json();
-        console.log(rjson);
         const { result, numChannels, validBits, sizeSample, sampleRate } = rjson.output.audio;
-        console.log(
-            numChannels,
-            result,
-            sampleRate,
-            sizeSample,
-            validBits
-        );
+        setResult(ListenResult.NONE);
         getBufferCallback(numChannels, result.length, sampleRate, result.map(x => Number(x)));
     };
+
+    const nextQuestion = () => {
+        if (questionIndex === questions.length - 1) return;
+        setText(questions[questionIndex + 1]);
+        setQuestionIndex(questionIndex + 1);
+        setAnswer("");
+    };
+
+    const checkAnswer = () => {
+        if(questions[questionIndex]===answer){
+            setResult(ListenResult.ACCEPTED);
+        }else{
+            setResult(ListenResult.WRONG);
+        }
+    }
     return (
         <Layout>
             <SEO title="Learn Thai as Thai style | Listening" />
             <Box padding="23vmin 30%">
+                Question Number {questionIndex+1}
                 <Box border="1px" padding="10px" rounded="lg">
                     Listen to This Word
                     <br />
-                    "Some Player"
+                    <Button
+                        variantColor="teal"
+                        variant="solid"
+                        onClick={() => {
+                            getSound(questions[questionIndex]);
+                        }}
+                    >
+                        {" "}
+                        Listen{" "}
+                    </Button>
                     <br />
                     Answer the Word that you hear
                     <br />
+                    <Stack isInline>
+                        <Input placeholder="Answer" borderColor="#999" value={answer} onInput={e => setAnswer(e.target.value)}></Input>
+                        <Button onClick={checkAnswer}>Submit</Button>
+                    </Stack>
                     <Box
                         padding="0 20px"
                         borderColor="#000"
@@ -89,28 +142,18 @@ const IndexPage = () => {
                     width="100%"
                     textAlign="right"
                 >
-                    <Button variantColor="gray" variant="link">
-                        {" "}
-                        previous question{" "}
-                    </Button>
-                    <Button variantColor="teal" variant="solid">
+                    <Button variantColor="teal" variant="solid" onClick={() => nextQuestion()} isDisabled={disableNext}>
                         {" "}
                         Next{" "}
                     </Button>
-                    <Button
-                        variantColor="teal"
-                        variant="solid"
-                        onClick={() => {
-                            getSound("ลอง");
-                        }}
-                    >
-                        {" "}
-                        Test{" "}
-                    </Button>
                 </ButtonGroup>
+                <CenterFlex width="100%">
+                    <Heading>{getPrettyResult(result)}</Heading>
+                </CenterFlex>
             </Box>
         </Layout>
     );
 };
 
 export default IndexPage;
+

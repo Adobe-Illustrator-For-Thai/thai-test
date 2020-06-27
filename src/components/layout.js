@@ -39,24 +39,25 @@ const Layout = ({ children }) => {
             <ThemeProvider theme={theme}>
                 <CSSReset />
                 <Links />
-                <div
+                <main
                     style={{
                         margin: `0 auto`,
-                        padding: `0 1.0875rem 1.45rem`,
                         flex: 1,
-                        width: "100%"
+                        width: "100%",
+                        height: "100%",
+                        display: "flex"
                     }}
                 >
-                    <main>{children}</main>
-                </div>
+                    {children}
+                </main>
                 <footer style={{bottom: 0}}>
                     <Box
                         bg="#DCDCDC"
-                        paddingTop="10px"
+                        paddingTop="5px"
                         overflow="auto"
                         marginBottom="0"
                     >
-                        <Text padding="10px">Learn Thai Style</Text>
+                        <Text padding="10px" fontWeight="600" marginLeft="5px">Learn Thai Style</Text>
                         <hr
                             style={{
                                 margin: `0 10px`,
@@ -70,12 +71,13 @@ const Layout = ({ children }) => {
                                 float="left"
                                 margin="10px"
                             >
-                                <Icon name="edit" size="32px"></Icon>Language
+                                <Icon name="edit" size="28px" marginRight="10px" marginLeft="5px"/>Language
                             </ListItem>
                             <ListItem
                                 display="inline-block"
                                 float="right"
-                                margin="10px"
+                                marginX="15px"
+                                marginY="10px"
                             >
                                 Contact Us
                             </ListItem>
