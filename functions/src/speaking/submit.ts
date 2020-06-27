@@ -1,11 +1,11 @@
 import * as https from "https";
 import * as FormData from "form-data";
-import * as path from "path";
-import * as os from "os";
-import * as fs from "fs";
-import { v4 } from "uuid";
-import * as ffmpeg from "fluent-ffmpeg";
-import * as ffmpeg_static from "ffmpeg-static";
+// import * as path from "path";
+// import * as os from "os";
+// import * as fs from "fs";
+// import { v4 } from "uuid";
+// import * as ffmpeg from "fluent-ffmpeg";
+// import * as ffmpeg_static from "ffmpeg-static";
 
 /**
  * Receives sound as webm
@@ -21,6 +21,7 @@ const submit = async (req: any, res: any) => {
             res.status(400).send("File not found");
             return;
         }
+        /*
         const fname = v4();
         const fpath = path.join(os.tmpdir(), fname + "-original.webm");
         fs.writeFileSync(fpath, file.buffer);
@@ -33,9 +34,10 @@ const submit = async (req: any, res: any) => {
                 .on("end", () => resolve())
                 .run()
         );
-        const formData = new FormData();
         const content = fs.readFileSync(ppath);
-        formData.append("wavfile", content);
+        */
+        const formData = new FormData();
+        formData.append("wavfile", file.buffer);
         formData.append("format", "json");
         const APIRequest = https.request({
             method: "POST",
