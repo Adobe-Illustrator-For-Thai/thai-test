@@ -53,7 +53,7 @@ const FileInput = (props: FileInputProps) => {
         const stopListener = () => {
             const recordedBlob: any = new Blob(recordedChunks);
             recordedBlob.lastModifiedDate = new Date();
-            recordedBlob.name = "submission.webm";
+            recordedBlob.name = "submission.wav";
             props.setFile(recordedBlob);
             stream.getTracks().forEach((track) => track.stop());
         };
@@ -171,12 +171,16 @@ const SpeakingPage = () => {
     const submitFile = async () => {
         const formData = new FormData();
         formData.append("wavfile", file);
+        formData.append("format", "json");
         setResult(SpeakingResult.LOADING);
         console.log("Submitting");
         const res = await fetch(SUBMIT_API_URL, {
             method: "POST",
             mode: "cors",
             body: formData,
+            headers: {
+                Apikey: "E6XUGhTP29Tm1Tepcy4fWbZ1CyzMOVxY"
+            }
         });
         if (!res.ok) {
             setResult(SpeakingResult.ERROR);
