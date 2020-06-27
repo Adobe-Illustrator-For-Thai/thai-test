@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../../components/layout";
 import SEO from "../../components/seo";
-import Links from "../../components/links";
 import { Link } from "gatsby";
 import CenterFlex from '../../components/CenterFlex';
 import { 
@@ -10,7 +9,6 @@ import {
     Heading,
     Text,
     Stack,
-    Flex,
     useTheme
 } from '@chakra-ui/core';
 
@@ -48,7 +46,9 @@ Feel free to start your test." to="/tests/speaking"/>
 const IndexPage = () => (
     <Layout>
         <SEO title="Learn Thai as Thai style | Test" />
-        <Cards/>
+        <Box flex="1">
+            <Cards/>
+        </Box>
     </Layout>
 );
 
