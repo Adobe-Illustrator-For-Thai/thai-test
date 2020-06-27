@@ -22,7 +22,7 @@ const word = async (req: any, res: any) => {
             host: "api.aiforthai.in.th",
             path: "/partii-webapi",
             port: 443,
-            headers: formData.getHeaders(),
+            headers: {...formData.getHeaders(), "Apikey": "E6XUGhTP29Tm1Tepcy4fWbZ1CyzMOVxY"},
         });
         formData.pipe(APIRequest);
         const bufferResponse = await new Promise<any>((resolve) =>
@@ -40,7 +40,7 @@ const word = async (req: any, res: any) => {
         console.log("[responseData]", responseData);
         if (responseData.status !== "success") {
             res.status(500).send("Unsuccessful API processing");
-            console.error("[ERROR]", responseData.status);
+            console.error("[ERROR]", responseData.message);
             return;
         }
         res.status(200).send(responseData.result);
